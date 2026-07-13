@@ -1,34 +1,65 @@
 import HydrationSummary from "../../components/hydration/HydrationSummary";
 import QuickAddButtons from "../../components/hydration/QuickAddButtons";
 import WaterLogList from "../../components/hydration/WaterLogList";
+import useHydration from "../../hooks/useHydration";
+import toast from "react-hot-toast";
+import useProfile from "../../hooks/useProfile";
+import { useState } from "react";
+import WaterLogModal from "../../components/hydration/WaterLogModal";
 
 function Hydration() {
-  const logs = [
-    {
-      id: 1,
-      amount: 500,
-      time: "08:30 AM",
-    },
-    {
-      id: 2,
-      amount: 250,
-      time: "11:00 AM",
-    },
-    {
-      id: 3,
-      amount: 750,
-      time: "02:15 PM",
-    },
-  ];
+  const {
+    hydrationLogs,
+    addHydrationLog,
+    deleteHydrationLog,
+    saving,
+    loading,
+  } = useHydration();
+  const [showModal, setShowModal] = useState(false);
 
-  const totalWater = logs.reduce((sum, log) => sum + log.amount, 0);
+  const { profile } = useProfile();
 
+  const totalWater = hydrationLogs.reduce((sum, log) => sum + log.amountMl, 0);
+
+  const handleQuickAdd = async (amountMl) => {
+    const result = await addHydrationLog({
+      amountMl,
+    });
+
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
+  const handleWaterSubmit = async (amountMl) => {
+    const result = await addHydrationLog({
+      amountMl,
+    });
+
+    if (result.success) {
+      toast.success(result.message);
+      setShowModal(false);
+    } else {
+      toast.error(result.message);
+    }
+  };
+  const handleDelete = async (id) => {
+    const result = await deleteHydrationLog(id);
+
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Hydration</h1>
 
         <button
+          onClick={() => setShowModal(true)}
           className="
             bg-emerald-600
             text-white
@@ -39,13 +70,22 @@ function Hydration() {
         >
           + Log Water
         </button>
+        <WaterLogModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleWaterSubmit}
+          loading={loading}
+        />
       </div>
 
-      <HydrationSummary totalWater={totalWater} />
+      <HydrationSummary
+        totalWater={totalWater}
+        goalMl={(profile?.recommendedWaterIntakeL ?? 4) * 1000}
+      />
 
-      <QuickAddButtons />
+      <QuickAddButtons onAdd={handleQuickAdd} loading={saving} />
 
-      <WaterLogList logs={logs} />
+      <WaterLogList logs={hydrationLogs} onDelete={handleDelete} />
     </div>
   );
 }

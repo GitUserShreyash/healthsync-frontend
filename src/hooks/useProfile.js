@@ -24,7 +24,7 @@ function useProfile() {
   }, []);
 
   // Update profile
-  const saveProfile = async (profileData = profile) => {
+  const saveProfile = async (profileData) => {
     try {
       setSaving(true);
       setError(null);
@@ -60,9 +60,11 @@ function useProfile() {
     setProfile,
 
     loading,
-    saving,
     error,
 
+    saving,
+    setSaving,
+    
     fetchProfile,
     saveProfile,
   };

@@ -1,10 +1,13 @@
-function HydrationSummary({ totalWater }) {
-  const goal = 4000;
+function HydrationSummary({ totalWater,
+    goalMl, }) {
+console.log("goalMl", goalMl);
+  const percentage =
+  goalMl > 0 ? Math.min((totalWater / goalMl) * 100, 100) : 0;
 
-  const percentage = Math.min(
-    (totalWater / goal) * 100,
-    100
-  );
+const remaining = Math.max(
+    goalMl - totalWater,
+    0
+);
 
   return (
     <div className="bg-white p-6 rounded-2xl border shadow-sm">
@@ -19,7 +22,7 @@ function HydrationSummary({ totalWater }) {
           </p>
 
           <h3 className="text-3xl font-bold">
-            {(totalWater / 1000).toFixed(1)}L
+            {(totalWater).toFixed(1)} mL
           </h3>
         </div>
 
@@ -29,7 +32,7 @@ function HydrationSummary({ totalWater }) {
           </p>
 
           <h3 className="text-3xl font-bold">
-            4L
+            {(goalMl).toFixed(1)} mL
           </h3>
         </div>
 
@@ -39,7 +42,7 @@ function HydrationSummary({ totalWater }) {
           </p>
 
           <h3 className="text-3xl font-bold">
-            {((goal - totalWater) / 1000).toFixed(1)}L
+            {(remaining ).toFixed(1)} mL
           </h3>
         </div>
       </div>
