@@ -1,340 +1,379 @@
 import { useMemo, useState } from "react";
-import { FaSearch, FaTimes } from "react-icons/fa";
 
-function AddMealModal({ onClose, onAddMeal }) {
+function AddMealModal({ foods = [], onAddMeal, onClose, loading }) {
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("ALL");
   const [selectedFood, setSelectedFood] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [mealType, setMealType] = useState("BREAKFAST");
 
-  // Dummy foods for now
-  const foods = [
-    {
-      id: 1,
-      foodName: "Chicken Biryani",
-      calories: 650,
-      protein: 30,
-      carbs: 70,
-      fat: 20,
-    },
-    {
-      id: 2,
-      foodName: "Poha",
-      calories: 250,
-      protein: 6,
-      carbs: 45,
-      fat: 5,
-    },
-    {
-      id: 3,
-      foodName: "Milk",
-      calories: 150,
-      protein: 8,
-      carbs: 12,
-      fat: 8,
-    },
-    {
-      id: 4,
-      foodName: "Paneer Curry",
-      calories: 500,
-      protein: 25,
-      carbs: 20,
-      fat: 30,
-    },
-  ];
+  const [mealType, setMealType] = useState("BREAKFAST");
+  const [quantity, setQuantity] = useState("100");
+
+  const categories = ["ALL", "BREAKFAST", "LUNCH", "DINNER", "SNACK"];
 
   const filteredFoods = useMemo(() => {
-    return foods.filter((food) =>
-      food.foodName
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
-  }, [search]);
+    return foods.filter((food) => {
+      const matchesSearch = food.foodName
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
 
-  const handleAddMeal = () => {
-    if (!selectedFood) return;
+      const matchesCategory =
+        category === "ALL" ||
+        food.category
+          ?.split(",")
+          .map((c) => c.trim().toLowerCase())
+          .includes(category.toLowerCase());
 
-    const consumedMeal = {
-      ...selectedFood,
-      mealType,
-      quantity,
-      calories: selectedFood.calories * quantity,
-      protein: selectedFood.protein * quantity,
-      carbs: selectedFood.carbs * quantity,
-      fat: selectedFood.fat * quantity,
-    };
-
-    if (onAddMeal) {
-      onAddMeal(consumedMeal);
+      return matchesSearch && matchesCategory;
+    });
+  }, [foods, search, category]);
+  console.log("Filtered Foods:", filteredFoods);
+  const nutrition = useMemo(() => {
+    if (!selectedFood) {
+      return {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      };
     }
 
-    onClose();
+    const multiplier = quantity / 100;
+
+    return {
+      calories: selectedFood.caloriesPer100g * multiplier,
+
+      protein: selectedFood.proteinPer100g * multiplier,
+
+      carbs: selectedFood.carbsPer100g * multiplier,
+
+      fat: selectedFood.fatPer100g * multiplier,
+
+      fiber: selectedFood.fiberPer100g * multiplier,
+
+      sugar: selectedFood.sugarPer100g * multiplier,
+
+      sodium: selectedFood.sodiumPer100g * multiplier,
+    };
+  }, [selectedFood, quantity]);
+
+  const handleSubmit = async () => {
+    if (!selectedFood || quantity <= 0) return;
+
+    const nutritionRequest = {
+      foodName: selectedFood.foodName,
+
+      quantity,
+
+      mealType,
+
+      calories: Number(nutrition.calories.toFixed(2)),
+
+      protein: Number(nutrition.protein.toFixed(2)),
+
+      carbs: Number(nutrition.carbs.toFixed(2)),
+
+      fat: Number(nutrition.fat.toFixed(2)),
+
+      fiber: Number(nutrition.fiber?.toFixed(2)) || 0,
+      
+      sugar: Number(nutrition.sugar?.toFixed(2)) || 0,
+
+      sodium: Number(nutrition.sodium?.toFixed(2)) || 0,
+    };
+
+    const result = await onAddMeal(nutritionRequest);
+
+    if (result?.success !== false) {
+      setSearch("");
+      setCategory("ALL");
+      setSelectedFood(null);
+      setQuantity(100);
+      setMealType("BREAKFAST");
+
+      onClose();
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white w-[90%] max-w-5xl rounded-2xl p-8 shadow-xl">
+    <div
+      className="
+        fixed
+        inset-0
+        bg-black/40
+        flex
+        justify-center
+        items-center
+        z-50
+      "
+    >
+      <div
+        className="
+          bg-white
+          rounded-2xl
+          w-150
+          max-h-[90vh]
+          overflow-y-auto
+          p-6
+          shadow-xl
+        "
+      >
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold">
-            Add Meal
-          </h2>
 
-          <button
-            onClick={onClose}
-            className="text-slate-500 hover:text-black"
-          >
-            <FaTimes size={22} />
+        <div
+          className="
+            flex
+            justify-between
+            items-center
+            mb-5
+          "
+        >
+          <h2 className="text-2xl font-semibold">Add Meal</h2>
+
+          <button onClick={onClose} className="text-xl text-gray-500">
+            ✕
           </button>
         </div>
 
         {/* Search */}
-        <div className="relative mb-8">
-          <FaSearch className="absolute left-4 top-4 text-slate-400" />
 
-          <input
-            type="text"
-            placeholder="Search food..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="
-              w-full
-              border
-              rounded-xl
-              py-3
-              pl-12
-              pr-4
-              outline-none
-              focus:ring-2
-              focus:ring-emerald-500
-            "
-          />
+        <input
+          type="text"
+          placeholder="Search food..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="
+            w-full
+            border
+            rounded-lg
+            p-3
+            mb-4
+          "
+        />
+
+        {/* Category */}
+
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="
+            w-full
+            border
+            rounded-lg
+            p-3
+            mb-4
+          "
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        {/* Food List */}
+
+        <div
+          className="
+            border
+            rounded-xl
+            max-h-60
+            overflow-y-auto
+          "
+        >
+          {filteredFoods.length === 0 ? (
+            <p
+              className="
+                  text-center
+                  text-gray-400
+                  p-5
+                "
+            >
+              No food found
+            </p>
+          ) : (
+            filteredFoods.map((food) => (
+              <button
+                key={food.id}
+                onClick={() => {
+                  console.log("Selected Food:", food);
+                  setSelectedFood(food);
+                }}
+                className={`
+                    w-full
+                    text-left
+                    p-3
+                    border-b
+                    hover:bg-emerald-50
+
+                    ${selectedFood?.id === food.id ? "bg-emerald-100" : ""}
+                  `}
+              >
+                <p className="font-medium">{food.foodName}</p>
+
+                <p className="text-sm text-gray-500">
+                  {food.caloriesPer100g} kcal /100g
+                  {" • "}
+                  {food.category}
+                </p>
+              </button>
+            ))
+          )}
         </div>
 
-        {/* Search Results */}
-        {!selectedFood && (
-          <div className="max-h-80 overflow-y-auto space-y-3">
-            {filteredFoods.length > 0 ? (
-              filteredFoods.map((food) => (
-                <div
-                  key={food.id}
-                  className="
-                    border
-                    rounded-xl
-                    p-5
-                    flex
-                    justify-between
-                    items-center
-                    hover:bg-slate-50
-                  "
-                >
-                  <div>
-                    <h3 className="font-semibold text-lg">
-                      {food.foodName}
-                    </h3>
+        {/* Meal and Quantity */}
 
-                    <p className="text-slate-500">
-                      {food.calories} cal
-                    </p>
-                  </div>
+        <div
+          className="
+            grid
+            grid-cols-2
+            gap-4
+            mt-5
+          "
+        >
+          <div>
+            <label className="block mb-2">Meal Type</label>
 
-                  <button
-                    onClick={() =>
-                      setSelectedFood(food)
-                    }
-                    className="
-                      bg-emerald-600
-                      text-white
-                      px-5
-                      py-2
-                      rounded-lg
-                    "
-                  >
-                    Select
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-slate-500">
-                  No food found.
-                </p>
+            <select
+              value={mealType}
+              onChange={(e) => setMealType(e.target.value)}
+              className="
+                w-full
+                border
+                rounded-lg
+                p-3
+              "
+            >
+              <option value="BREAKFAST">Breakfast</option>
 
-                <button
-                  className="
-                    mt-4
-                    text-emerald-600
-                    font-semibold
-                  "
-                >
-                  + Add Custom Food
-                </button>
-              </div>
-            )}
+              <option value="LUNCH">Lunch</option>
+
+              <option value="DINNER">Dinner</option>
+
+              <option value="SNACK">Snack</option>
+            </select>
           </div>
-        )}
 
-        {/* Selected Food */}
+          <div>
+            <label className="block mb-2">Quantity (grams)</label>
+
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="
+                w-full
+                border
+                rounded-lg
+                p-3
+              "
+            />
+          </div>
+        </div>
+
+        {/* Nutrition Preview */}
+
         {selectedFood && (
-          <div className="border rounded-2xl p-8 bg-slate-50">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-2xl font-bold">
-                  {selectedFood.foodName}
-                </h3>
+          <div
+            className="
+                bg-gray-50
+                rounded-xl
+                p-4
+                mt-5
+              "
+          >
+            <h3 className="font-semibold mb-4">Nutrition Preview</h3>
 
-                <p className="text-slate-500 mt-2">
-                  Per Serving
-                </p>
-              </div>
-
-              <button
-                onClick={() =>
-                  setSelectedFood(null)
-                }
-                className="text-emerald-600"
-              >
-                Change Food
-              </button>
-            </div>
-
-            {/* Nutrition */}
-            <div className="grid grid-cols-4 gap-6 mt-8">
-              <div className="bg-white rounded-xl p-4">
-                <p className="text-slate-500">
-                  Calories
-                </p>
-
-                <h4 className="text-2xl font-bold">
-                  {selectedFood.calories}
-                </h4>
-              </div>
-
-              <div className="bg-white rounded-xl p-4">
-                <p className="text-slate-500">
-                  Protein
-                </p>
-
-                <h4 className="text-2xl font-bold">
-                  {selectedFood.protein} g
-                </h4>
-              </div>
-
-              <div className="bg-white rounded-xl p-4">
-                <p className="text-slate-500">
-                  Carbs
-                </p>
-
-                <h4 className="text-2xl font-bold">
-                  {selectedFood.carbs} g
-                </h4>
-              </div>
-
-              <div className="bg-white rounded-xl p-4">
-                <p className="text-slate-500">
-                  Fat
-                </p>
-
-                <h4 className="text-2xl font-bold">
-                  {selectedFood.fat} g
-                </h4>
-              </div>
-            </div>
-
-            {/* Inputs */}
-            <div className="grid grid-cols-2 gap-6 mt-8">
-              <div>
-                <label className="block mb-2 font-medium">
-                  Quantity
-                </label>
-
-                <input
-                  type="number"
-                  min="1"
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      Number(e.target.value)
-                    )
-                  }
-                  className="
-                    w-full
-                    border
-                    rounded-xl
-                    px-4
-                    py-3
-                  "
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 font-medium">
-                  Meal Type
-                </label>
-
-                <select
-                  value={mealType}
-                  onChange={(e) =>
-                    setMealType(e.target.value)
-                  }
-                  className="
-                    w-full
-                    border
-                    rounded-xl
-                    px-4
-                    py-3
-                  "
-                >
-                  <option value="BREAKFAST">
-                    Breakfast
-                  </option>
-
-                  <option value="LUNCH">
-                    Lunch
-                  </option>
-
-                  <option value="DINNER">
-                    Dinner
-                  </option>
-
-                  <option value="SNACK">
-                    Snack
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex justify-end gap-4 mt-8">
-              <button
-                onClick={onClose}
-                className="
-                  px-5
-                  py-3
-                  border
-                  rounded-xl
+            <div
+              className="
+                  grid
+                  grid-cols-4
+                  gap-3
+                  text-center
                 "
-              >
-                Cancel
-              </button>
+            >
+              <div>
+                <p className="text-sm text-gray-500">Calories</p>
 
-              <button
-                onClick={handleAddMeal}
-                className="
-                  bg-emerald-600
-                  text-white
-                  px-6
-                  py-3
-                  rounded-xl
-                "
-              >
-                Add Meal
-              </button>
+                <p className="font-semibold">{nutrition.calories.toFixed(0)}</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">Protein</p>
+
+                <p className="font-semibold">{nutrition.protein.toFixed(1)}g</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">Carbs</p>
+
+                <p className="font-semibold">{nutrition.carbs.toFixed(1)}g</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">Fat</p>
+
+                <p className="font-semibold">{nutrition.fat.toFixed(1)}g</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">fiber</p>
+
+                <p className="font-semibold">{nutrition.fat.toFixed(1)}g</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">sugar</p>
+
+                <p className="font-semibold">{nutrition.sugar.toFixed(1)}g</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500">sodium</p>
+
+                <p className="font-semibold">{nutrition.sodium.toFixed(1)}g</p>
+              </div>
             </div>
           </div>
         )}
+
+        {/* Buttons */}
+
+        <div
+          className="
+            flex
+            justify-end
+            gap-3
+            mt-6
+          "
+        >
+          <button
+            onClick={onClose}
+            className="
+              border
+              px-5
+              py-2
+              rounded-lg
+            "
+          >
+            Cancel
+          </button>
+
+          <button
+            disabled={!selectedFood || loading}
+            onClick={handleSubmit}
+            className="
+              bg-emerald-600
+              text-white
+              px-5
+              py-2
+              rounded-lg
+              disabled:opacity-50
+            "
+          >
+            {loading ? "Adding..." : "Add Meal"}
+          </button>
+        </div>
       </div>
     </div>
   );

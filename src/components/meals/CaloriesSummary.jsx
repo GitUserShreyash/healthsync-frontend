@@ -1,52 +1,62 @@
-function CaloriesSummary({ consumed }) {
-  const goal = 2500;
-  const remaining = goal - consumed;
-  const percentage =
-    (consumed / goal) * 100;
+function CaloriesSummary({
+  consumed,
+  goal,
+}) {
+  const remaining = Math.max(goal - consumed, 0);
 
   return (
-    <div className="bg-white rounded-2xl border p-6 shadow-sm">
-      <h2 className="text-xl font-semibold">
-        Calories Remaining
+    <div className="bg-white rounded-2xl shadow-sm p-6">
+
+      <h2 className="text-lg font-semibold mb-6">
+        Today's Calories
       </h2>
 
-      <div className="mt-4 flex justify-between">
-        <div>
-          <p className="text-slate-500">
-            Goal
-          </p>
-          <h3 className="text-2xl font-bold">
-            {goal}
-          </h3>
-        </div>
+      <div className="grid grid-cols-3 gap-6 text-center">
 
         <div>
-          <p className="text-slate-500">
-            Food
+          <p className="text-sm text-gray-500">
+            Consumed
           </p>
-          <h3 className="text-2xl font-bold">
+
+          <h3 className="text-3xl font-bold text-emerald-600">
             {consumed}
           </h3>
+
+          <p className="text-sm">
+            kcal
+          </p>
         </div>
 
         <div>
-          <p className="text-slate-500">
+          <p className="text-sm text-gray-500">
+            Goal
+          </p>
+
+          <h3 className="text-3xl font-bold">
+            {goal}
+          </h3>
+
+          <p className="text-sm">
+            kcal
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">
             Remaining
           </p>
-          <h3 className="text-2xl font-bold">
+
+          <h3 className="text-3xl font-bold">
             {remaining}
           </h3>
+
+          <p className="text-sm">
+            kcal
+          </p>
         </div>
+
       </div>
 
-      <div className="w-full bg-slate-200 h-4 rounded-full mt-6">
-        <div
-          className="bg-emerald-500 h-4 rounded-full"
-          style={{
-            width: `${percentage}%`,
-          }}
-        />
-      </div>
     </div>
   );
 }
