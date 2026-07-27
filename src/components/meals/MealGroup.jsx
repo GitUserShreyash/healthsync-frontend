@@ -85,7 +85,7 @@ function MealGroup({ title, icon, meals = [], onDelete }) {
                       onDelete(meal.id);
                     }}
                     className="
-                          text-white bg-red-500 hover:bg-red-800 rounded-md
+                          text-red-500 hover:text-red-700
                         "
                   >
                     Delete

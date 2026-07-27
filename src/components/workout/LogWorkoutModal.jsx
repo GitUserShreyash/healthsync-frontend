@@ -1,83 +1,195 @@
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 
-export default function LogWorkoutModal({
-  onClose,
-}) {
-  const [form, setForm] = useState({
-    workoutName: "",
-    duration: "",
-    calories: "",
+const workoutTypes = [
+  "CHEST",
+  "BACK",
+  "SHOULDERS",
+  "LEGS",
+  "FULL_BODY",
+  "REST",
+  "CARDIO",
+  "WALKING",
+  "CYCLING",
+  "YOGA",
+  "STRENGTH",
+  "ARMS",
+];
+
+const intensities = ["LOW", "MEDIUM", "HIGH"];
+
+export default function LogWorkoutModal({ onClose, onSubmit }) {
+  const [formData, setFormData] = useState({
+    workoutType: "",
+    day: new Date().toISOString().split("T")[0],
+    durationMinutes: "",
+    intensity: "",
     notes: "",
   });
 
-  function handleChange(e) {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  }
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      await onSubmit({
+        ...formData,
+        durationMinutes: Number(formData.durationMinutes),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-2xl w-175 p-8 shadow-xl">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold">
-            Log Workout
-          </h2>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl">
+        {/* Header */}
 
-          <button onClick={onClose}>
-            <FaTimes />
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-xl font-bold text-gray-800">Log Workout</h2>
+
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-800 text-xl"
+          >
+            ✕
           </button>
         </div>
 
-        <div className="space-y-5">
-          <input
-            name="workoutName"
-            placeholder="Workout Name"
-            onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-3"
-          />
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Workout Type */}
 
-          <input
-            name="duration"
-            type="number"
-            placeholder="Duration (minutes)"
-            onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-3"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Workout Type
+            </label>
 
-          <input
-            name="calories"
-            type="number"
-            placeholder="Calories Burned"
-            onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-3"
-          />
+            <select
+              name="workoutType"
+              value={formData.workoutType}
+              onChange={handleChange}
+              required
+              className="w-full border rounded-xl px-4 py-3"
+            >
+              <option value="">Select workout</option>
 
-          <textarea
-            name="notes"
-            rows="4"
-            placeholder="Workout Notes"
-            onChange={handleChange}
-            className="w-full border rounded-xl px-4 py-3"
-          />
+              {workoutTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <div className="flex justify-end gap-4">
+          {/* Date */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Workout Date
+            </label>
+
+            <input
+              type="date"
+              name="day"
+              value={formData.day}
+              onChange={handleChange}
+              required
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          {/* Duration */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Duration (minutes)
+            </label>
+
+            <input
+              type="number"
+              name="durationMinutes"
+              value={formData.durationMinutes}
+              onChange={handleChange}
+              min="1"
+              required
+              placeholder="45"
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          {/* Intensity */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Intensity
+            </label>
+
+            <select
+              name="intensity"
+              value={formData.intensity}
+              onChange={handleChange}
+              required
+              className="w-full border rounded-xl px-4 py-3"
+            >
+              <option value="">Select intensity</option>
+
+              {intensities.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Notes */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Notes
+            </label>
+
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Workout notes..."
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          {/* Buttons */}
+
+          <div className="flex gap-3 pt-3">
             <button
+              type="button"
               onClick={onClose}
-              className="border rounded-xl px-5 py-3"
+              className="flex-1 border rounded-xl py-3"
             >
               Cancel
             </button>
 
             <button
-              className="bg-emerald-600 text-white rounded-xl px-6 py-3"
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-blue-600 text-white rounded-xl py-3 hover:bg-blue-700 disabled:opacity-50"
             >
-              Save Workout
+              {loading ? "Saving..." : "Save Workout"}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

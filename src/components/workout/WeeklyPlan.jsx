@@ -1,24 +1,43 @@
 import WorkoutPlanCard from "./WorkoutPlanCard";
 
 export default function WeeklyPlan({
-  plans,
-  onOpen,
+  weeklyPlan = [],
+
+  onSelectWorkout,
 }) {
   return (
-    <div className="space-y-5">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
-          Weekly Workout Plan
-        </h2>
-      </div>
+    <div
+      className="
+bg-white
+rounded-2xl
+p-6
+border
+"
+    >
+      <h2
+        className="
+text-xl
+font-bold
+mb-5"
+      >
+        Weekly Plan
+      </h2>
 
-      <div className="grid grid-cols-3 gap-6">
-        {plans.map((plan) => (
+      <div
+        className="
+grid
+grid-cols-1
+md:grid-cols-2
+xl:grid-cols-4
+gap-5
+"
+      >
+        {weeklyPlan.map((plan) => (
           <WorkoutPlanCard
-    key={plan.id}
-    plan={plan}
-    onOpen={onOpen}
-/>
+            key={plan.id}
+            workout={plan}
+            onClick={() => onSelectWorkout(plan)}
+          />
         ))}
       </div>
     </div>

@@ -1,58 +1,47 @@
-import {
-  FaFire,
-  FaClock,
-  FaDumbbell,
-  FaCalendarCheck,
-} from "react-icons/fa";
+import SummaryCard from "./SummaryCard";
 
-export default function WorkoutSummary() {
-  const cards = [
-    {
-      title: "Calories Burned",
-      value: "320 kcal",
-      icon: <FaFire className="text-red-500 text-2xl" />,
-    },
-    {
-      title: "Workout Time",
-      value: "45 mins",
-      icon: <FaClock className="text-blue-500 text-2xl" />,
-    },
-    {
-      title: "Completed",
-      value: "2 / 6",
-      icon: <FaDumbbell className="text-emerald-500 text-2xl" />,
-    },
-    {
-      title: "This Week",
-      value: "4 Workouts",
-      icon: (
-        <FaCalendarCheck className="text-purple-500 text-2xl" />
-      ),
-    },
-  ];
+export default function WorkoutSummary({ summary }) {
+  if (!summary) {
+    return null;
+  }
 
   return (
-    <div className="grid grid-cols-4 gap-6">
-      {cards.map((card) => (
-        <div
-          key={card.title}
-          className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition"
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-slate-500 text-sm">
-                {card.title}
-              </p>
+    <div
+      className="
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      lg:grid-cols-4
+      gap-6
+    "
+    >
+      <SummaryCard
+        title="Workouts This Week"
+        value={summary.workoutsThisWeek}
+        unit="sessions"
+        icon="💪"
+      />
 
-              <h2 className="text-2xl font-bold mt-2">
-                {card.value}
-              </h2>
-            </div>
+      <SummaryCard
+        title="Total Minutes"
+        value={summary.totalMinutes}
+        unit="minutes"
+        icon="⏱️"
+      />
 
-            {card.icon}
-          </div>
-        </div>
-      ))}
+      <SummaryCard
+        title="Calories Burned"
+        value={Math.round(summary.totalCalories)}
+        unit="kcal"
+        icon="🔥"
+      />
+
+      <SummaryCard
+        title="Current Streak"
+        value={summary.currentStreak}
+        unit="days"
+        icon="🏆"
+      />
     </div>
   );
 }

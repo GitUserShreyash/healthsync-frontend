@@ -1,65 +1,93 @@
-import { useState } from "react";
-import { FaTimes, FaClock, FaFire } from "react-icons/fa";
+import React from "react";
 
-export default function WorkoutDetailsModal({ plan, onClose }) {
-  if (!plan) return null;
-    const [completed, setCompleted] = useState(plan.completed);
+export default function WorkoutDetailsModal({ workout, onClose }) {
+  if (!workout) return null;
+
+  const duration =
+    workout.durationMinutes || workout.targetDurationMinutes || 0;
+
+  const date = workout.day ? new Date(workout.day).toLocaleDateString() : "N/A";
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white w-212.5 rounded-2xl shadow-xl p-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-3xl font-bold">
-              {plan.day} - {plan.workoutName}
-            </h2>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+        {/* Header */}
 
-            <p className="text-slate-500 mt-2">{plan.muscleGroup}</p>
-          </div>
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-xl font-bold text-gray-800">Workout Details</h2>
 
-          <button onClick={onClose}>
-            <FaTimes size={20} />
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-800 text-xl"
+          >
+            ✕
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-8">
-          {plan.exercises.map((exercise) => (
-            <div key={exercise.id} className="border rounded-xl p-5">
-              <h3 className="font-bold text-lg">{exercise.exerciseName}</h3>
+        {/* Content */}
 
-              <p className="mt-3">Sets : {exercise.sets}</p>
+        <div className="p-6 space-y-5">
+          <DetailItem label="Workout Type" value={workout.workoutType} />
 
-              <p>Reps : {exercise.reps}</p>
+          <DetailItem label="Date" value={date} />
 
-              <p>Weight : {exercise.weight} kg</p>
+          <DetailItem label="Duration" value={`${duration} minutes`} />
 
-              <p>Rest : {exercise.restSeconds}s</p>
-            </div>
-          ))}
+          {workout.intensity && (
+            <DetailItem label="Intensity" value={workout.intensity} />
+          )}
+
+          {workout.caloriesBurned !== undefined && (
+            <DetailItem
+              label="Calories Burned"
+              value={`${workout.caloriesBurned} kcal`}
+            />
+          )}
+
+          {workout.description && (
+            <DetailItem label="Description" value={workout.description} />
+          )}
+
+          {workout.notes && <DetailItem label="Notes" value={workout.notes} />}
+
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500">Status</span>
+
+            <span
+              className={`px-3 py-1 rounded-full text-sm ${
+                workout.completed
+                  ? "bg-green-100 text-green-700"
+                  : "bg-yellow-100 text-yellow-700"
+              }`}
+            >
+              {workout.completed ? "Completed" : "Pending"}
+            </span>
+          </div>
         </div>
 
-        <div className="flex gap-10 mt-8">
-          <div className="flex items-center gap-2">
-            <FaClock />
-            {plan.duration} mins
-          </div>
+        {/* Footer */}
 
-          <div className="flex items-center gap-2">
-            <FaFire />
-            {plan.calories} kcal
-          </div>
+        <div className="p-6 border-t">
+          <button
+            onClick={onClose}
+            className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700"
+          >
+            Close
+          </button>
         </div>
-
-        <button
-          className="mt-8 w-full bg-emerald-600 text-white py-4 rounded-xl font-semibold"
-          onClick={() => {
-            setCompleted(true);
-            if (typeof onClose === "function") onClose();
-          }}
-        >
-          Complete Workout
-        </button>
       </div>
+    </div>
+  );
+}
+
+function DetailItem({ label, value }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-gray-500">{label}</span>
+
+      <span className="font-semibold text-gray-800 text-right">
+        {value || "N/A"}
+      </span>
     </div>
   );
 }
