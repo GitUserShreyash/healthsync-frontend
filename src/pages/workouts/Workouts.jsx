@@ -50,11 +50,11 @@ export default function Workouts() {
         setCompleted={setCompleted}
       />
 
-      {/* <WorkoutSummary summary={summary} />
+       <WorkoutSummary summary={summary} />
 
-      <WeeklyPlan plans={plans} />
+      <WeeklyPlan weeklyPlan={plans} />
 
-      <WorkoutHistory workouts={history} /> */}
+      <WorkoutHistory workouts={history} />
     </div>
   );
 }

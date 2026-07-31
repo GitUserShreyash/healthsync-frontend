@@ -2,7 +2,7 @@ import React from "react";
 
 export default function WorkoutHistory({ workouts = [], onViewDetails }) {
   return (
-    <div className="bg-white rounded-2xl border shadow-sm p-6">
+    <div className="bg-white rounded-2xl shadow-sm p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-6">Workout History</h2>
 
       {workouts.length === 0 ? (

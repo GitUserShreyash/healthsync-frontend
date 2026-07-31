@@ -17,7 +17,9 @@ export const getWorkoutSummary = async () => {
 
 export const getTodayWorkout = async () => {
   try {
-    return await getTodayWorkoutApi();
+    const response = await getTodayWorkoutApi();
+    console.log("Today's workout:", response);
+    return response;
   } catch (error) {
     throw error.response?.data || error;
   }
@@ -25,7 +27,9 @@ export const getTodayWorkout = async () => {
 
 export const getWorkoutPlan = async () => {
   try {
-    return await getWorkoutPlanApi();
+    const response = await getWorkoutPlanApi();
+    console.log("Workout plan:", response);
+    return response;
   } catch (error) {
     throw error.response?.data || error;
   }
