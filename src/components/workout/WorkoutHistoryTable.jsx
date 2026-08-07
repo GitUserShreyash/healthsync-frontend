@@ -1,12 +1,6 @@
-import {
-  FaClock,
-  FaFire,
-  FaTrash,
-} from "react-icons/fa";
+import { FaClock, FaFire, FaTrash } from "react-icons/fa";
 
-export default function WorkoutHistoryCard({
-  workout,
-}) {
+export default function WorkoutHistoryCard({ workout }) {
   return (
     <div
       className="
@@ -21,13 +15,9 @@ export default function WorkoutHistoryCard({
     >
       <div className="flex justify-between">
         <div>
-          <h3 className="text-xl font-bold">
-            💪 {workout.workoutName}
-          </h3>
+          <h3 className="text-xl font-bold">💪 {workout.workoutName}</h3>
 
-          <p className="text-slate-400 mt-1">
-            {workout.date}
-          </p>
+          <p className="text-slate-400 mt-1">{workout.date}</p>
         </div>
 
         <button className="text-red-500 hover:text-red-700">
@@ -47,9 +37,7 @@ export default function WorkoutHistoryCard({
         </div>
       </div>
 
-      <p className="mt-5 text-slate-600">
-        {workout.notes}
-      </p>
+      <p className="mt-5 text-slate-600">{workout.notes}</p>
     </div>
   );
 }
