@@ -11,6 +11,7 @@ export default function useProgress() {
     setError(null);
     try {
       const progressData = await getProgress(days);
+      console.log('Fetched progress data:', progressData);
       setProgress(progressData);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load progress.");
