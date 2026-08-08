@@ -1,37 +1,45 @@
 import { FaTint } from "react-icons/fa";
 
-function WaterCard() {
-  const consumed = 2.5;
-  const goal = 3.0;
+function WaterCard({ logs = [], goal = 2 }) {
+  // Total consumed in ml
+  const consumedMl = logs.reduce((sum, item) => sum + item.amountMl, 0);
 
-  const percentage = Math.min(Math.round((consumed / goal) * 100), 100);
+  // Convert ml -> liters
+  const consumedL = consumedMl / 1000;
 
-  const remaining = (goal - consumed).toFixed(1);
+  const percentage = Math.min(
+    Math.round((consumedL / goal) * 100),
+    100
+  );
+
+  const remaining = Math.max(goal - consumedL, 0);
+
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border">
-      <div className="flex items-center gap-3 mb-6">
-        <FaTint className="text-blue-500 text-2xl" />
-        <h2 className="text-xl font-semibold">Hydration</h2>
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="flex items-center gap-2">
+        <FaTint className="text-blue-500" />
+        <h2 className="text-lg font-semibold">Hydration</h2>
       </div>
 
-      <div className="mb-4">
-        <p className="text-3xl font-bold">
-          {consumed}L<span className="text-lg text-slate-500"> / {goal}L</span>
-        </p>
-      </div>
+      <p className="mt-4 text-3xl font-bold">
+        {consumedL.toFixed(2)}
+        <span className="text-lg font-normal text-gray-500">
+          {" "}
+          / {goal.toFixed(2)} L
+        </span>
+      </p>
 
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-200 rounded-full h-4">
+      <div className="mt-5 h-4 rounded-full bg-gray-200">
         <div
-          className="bg-blue-500 h-4 rounded-full"
+          className="h-4 rounded-full bg-blue-500"
           style={{ width: `${percentage}%` }}
         />
       </div>
 
-      <div className="flex justify-between mt-3">
-        <span className="text-slate-600">{percentage}%</span>
+      <div className="mt-3 flex justify-between text-gray-500">
+        <span>{percentage}%</span>
 
-        <span className="text-slate-600">{remaining}L remaining</span>
+        <span>{remaining.toFixed(2)} L remaining</span>
       </div>
     </div>
   );

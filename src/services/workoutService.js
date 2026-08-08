@@ -5,6 +5,7 @@ import {
   logWorkoutApi,
   getWorkoutHistoryApi,
   deleteWorkoutApi,
+  getTodayStatusApi,
 } from "../api/workoutApi";
 
 export const getWorkoutSummary = async () => {
@@ -54,6 +55,14 @@ export const getWorkoutHistory = async () => {
 export const deleteWorkout = async (id) => {
   try {
     return await deleteWorkoutApi(id);
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const getTodayStatus = async () => {
+  try {
+    return await getTodayStatusApi();
   } catch (error) {
     throw error.response?.data || error;
   }

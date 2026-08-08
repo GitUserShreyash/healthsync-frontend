@@ -21,6 +21,8 @@ import HealthInsights from "../pages/ai/HealthInsights.jsx";
 import GoalSuggestions from "../pages/ai/GoalSuggestions.jsx";
 import useAuth from "../hooks/useAuth";
 import ProtectedRoute from "./ProtectedRoute";
+import Insights from "../pages/insights/Insights.jsx";
+import Goal from "../pages/goal/Goal.jsx";
 
 export default function AppRoutes() {
   const { isAuthenticated, loading } = useAuth();
@@ -63,8 +65,8 @@ export default function AppRoutes() {
         <Route path="/ai" element={<AiCoach />} />
         <Route path="/ai/meals" element={<MealRecommendations />} />
         <Route path="/ai/workouts" element={<WorkoutRecommendations />} />
-        <Route path="/ai/insights" element={<HealthInsights />} />
-        <Route path="/ai/goals" element={<GoalSuggestions />} />
+        <Route path="/insights" element={<Insights />} />
+        <Route path="/goals" element={<Goal />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

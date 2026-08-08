@@ -7,12 +7,15 @@ import {
   logWorkout,
   getWorkoutHistory,
   deleteWorkout,
+  getTodayStatus,
 } from "../services/workoutService";
 
 function useWorkouts() {
   const [summary, setSummary] = useState(null);
 
   const [todayWorkout, setTodayWorkout] = useState(null);
+
+  const [todayStatus, setTodayStatus] = useState(null);
 
   const [plans, setPlans] = useState([]);
 
@@ -26,16 +29,18 @@ function useWorkouts() {
     try {
       setLoading(true);
 
-      const [summaryData, todayData, planData, historyData] = await Promise.all(
+      const [summaryData, todayData, planData, historyData, todayStatusData] = await Promise.all(
         [
           getWorkoutSummary(),
           getTodayWorkout(),
           getWorkoutPlan(),
           getWorkoutHistory(),
+          getTodayStatus(),
         ],
       );
 
       setSummary(summaryData);
+      setTodayStatus(todayStatusData);
       setTodayWorkout(todayData);
       setPlans(planData);
       setHistory(historyData);
@@ -93,6 +98,7 @@ function useWorkouts() {
     todayWorkout,
     plans,
     history,
+    todayStatus,
 
     loading,
     error,

@@ -29,3 +29,9 @@ export const deleteWorkoutApi = async (id) => {
   const response = await axiosInstance.delete(`/api/workout/${id}`);
   return response.data;
 };
+
+export const getTodayStatusApi = async () => {
+  const response = await axiosInstance.get("/api/workout/today/status");
+  console.log("getTodayStatusApi response:", response);
+  return response.data;
+};

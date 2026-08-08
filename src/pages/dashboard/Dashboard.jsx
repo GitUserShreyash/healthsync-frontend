@@ -1,10 +1,12 @@
-import AiInsightsCard from "../../components/dashboard/AiInsightCard";
-import GoalProgressCard from "../../components/dashboard/GoalProgressCard";
-import StatCard from "../../components/dashboard/StatCard";
+import useDashboard from "../../hooks/useDashboard";
+import useNutrition from "../../hooks/useNutrition";
+import useHydration from "../../hooks/useHydration";
+import useWorkouts from "../../hooks/useWorkouts";
+
 import TodayMealsCard from "../../components/dashboard/TodayMealsCard";
 import TodayWorkoutCard from "../../components/dashboard/TodayWorkoutCard";
 import WaterCard from "../../components/dashboard/WaterCard";
-import useDashboard from "../../hooks/useDashboard";
+import StatCard from "../../components/dashboard/StatCard";
 
 import {
   FaFire,
@@ -18,39 +20,50 @@ import {
 function Dashboard() {
   const { dashboard, loading, error } = useDashboard();
 
+  const { nutritionLogs } = useNutrition();
+
+  const { hydrationLogs } = useHydration();
+
+  const { todayWorkout, todayStatus } = useWorkouts();
+
+  console.log("todayWorkout:", todayWorkout);
+  console.log("todayStatus:", todayStatus);
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        Loading dashboard...
+      <div className="flex h-64 items-center justify-center">
+        <p className="text-gray-500">Loading dashboard...</p>
       </div>
     );
   }
 
   if (error) {
-    return (
-      <div className="text-red-600 text-center">
-        {error}
-      </div>
-    );
+    return <div className="rounded-xl bg-red-50 p-5 text-red-600">{error}</div>;
+  }
+
+  if (!dashboard) {
+    return null;
   }
 
   return (
-    <>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">
+    <div className="space-y-8">
+      {/* Header */}
+
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">
           Welcome, {dashboard.username} 👋
         </h1>
 
-        <p className="text-gray-500 mt-2">
+        <p className="mt-2 text-gray-500">
           Here's your health summary for today.
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-6">
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard
           title="BMI"
-          value={dashboard.bmi != null ? dashboard.bmi.toFixed(2) : "--"}
+          value={dashboard.bmi ? dashboard.bmi.toFixed(2) : "--"}
           unit={dashboard.bmiCategory}
           icon={FaRulerVertical}
         />
@@ -71,7 +84,11 @@ function Dashboard() {
 
         <StatCard
           title="Water Goal"
-          value={dashboard.dailyWaterGoalL ?? "--"}
+          value={
+            dashboard.dailyWaterGoalL
+              ? dashboard.dailyWaterGoalL.toFixed(2)
+              : "--"
+          }
           unit="L"
           icon={FaTint}
         />
@@ -95,38 +112,54 @@ function Dashboard() {
         />
       </div>
 
-      {/* Meals & Workout */}
-      <div className="grid grid-cols-2 gap-6 mt-8">
-        <TodayMealsCard />
+      {/* Today's Activity */}
 
-        <TodayWorkoutCard />
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <TodayMealsCard meals={nutritionLogs} />
+
+        <TodayWorkoutCard workout={todayWorkout} status={todayStatus} />
       </div>
 
-      {/* Water & Goal */}
-      <div className="grid grid-cols-2 gap-6 mt-8">
+      {/* Hydration + Goal */}
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <WaterCard
+          logs={hydrationLogs}
           goal={dashboard.dailyWaterGoalL}
           streak={dashboard.hydrationStreakDays}
         />
 
-        <GoalProgressCard goal={dashboard.goal} />
+        {/* Goal Progress Coming Soon */}
+
+        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">Goal Progress</h2>
+
+          <p className="mt-3 text-gray-500">Coming Soon...</p>
+        </div>
       </div>
 
-      {/* AI */}
-      <div className="grid grid-cols-2 gap-6 mt-8">
-        <AiInsightsCard recommendation={dashboard.recommendation} />
+      {/* AI + Recent Activity */}
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border">
-          <h2 className="text-lg font-semibold mb-4">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        {/* AI Coming Soon */}
+
+        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">AI Insights</h2>
+
+          <p className="mt-3 text-gray-500">Coming Soon...</p>
+        </div>
+
+        {/* Recent Activity */}
+
+        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">
             Recent Activity
           </h2>
 
-          <p className="text-gray-500">
-            Coming Soon...
-          </p>
+          <p className="mt-3 text-gray-500">Coming Soon...</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
