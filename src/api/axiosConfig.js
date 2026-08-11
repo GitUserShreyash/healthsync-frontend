@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: "https://healthsync-backend-gj5i.onrender.com",
@@ -10,7 +10,11 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     
+    // Ensure headers object exists
+    config.headers = config.headers || {};
+
     if (token) {
+        // Attach Bearer token when available
         config.headers.Authorization = `Bearer ${token}`;
     }
 
