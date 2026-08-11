@@ -4,7 +4,7 @@ function TodayWorkoutCard({ workout, status }) {
       <div className="rounded-2xl border bg-white p-6 shadow-sm h-full">
         <h2 className="text-lg font-semibold text-gray-900">Today's Workout</h2>
 
-        <div className="mt-8 flex h-[250px] flex-col items-center justify-center text-center">
+        <div className="mt-8 flex h-62.5 flex-col items-center justify-center text-center">
           <div className="text-5xl">💪</div>
 
           <h3 className="mt-4 text-xl font-semibold text-gray-900">
@@ -55,9 +55,9 @@ function TodayWorkoutCard({ workout, status }) {
         <h4 className="mb-3 font-semibold text-gray-900">Exercises</h4>
 
         <div className="space-y-2">
-          {workout.exercises.map((exercise) => (
+          {workout.exercises.map((exercise, ) => (
             <div
-              key={exercise.id}
+              key={exercise.exerciseName}
               className="flex items-center justify-between rounded-lg border px-3 py-2"
             >
               <span>{exercise.exerciseName}</span>

@@ -4,19 +4,26 @@ import WeeklyPlan from "../../components/workout/WeeklyPlan";
 import WorkoutHistory from "../../components/workout/WorkoutHistory";
 
 import useWorkouts from "../../hooks/useWorkouts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Workouts() {
   const {
     summary,
     todayWorkout,
     plans,
+    todayStatus,
     history,
     loading,
     error,
     addWorkout,
   } = useWorkouts();
   const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    if (todayStatus) {
+      setCompleted(todayStatus ?? false);
+    }
+  }, [todayWorkout]);
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
