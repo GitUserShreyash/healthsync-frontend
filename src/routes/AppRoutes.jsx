@@ -25,45 +25,25 @@ import Insights from "../pages/insights/Insights.jsx";
 import Goal from "../pages/goal/Goal.jsx";
 
 import useAuth from "../hooks/useAuth";
-import useProfile from "../hooks/useProfile";
 
 import ProtectedRoute from "./ProtectedRoute";
 import ProfileGuard from "./ProfileGuard";
+import RootRedirect from "./RootRedirect";
 
 export default function AppRoutes() {
   const { isAuthenticated, loading: authLoading } = useAuth();
 
-  const { profile, loading: profileLoading } = useProfile();
 
   // Authentication is still being checked
   if (authLoading) {
     return <div>Loading...</div>;
   }
 
-  // If user is authenticated, profile is required
-  // to decide whether to show profile or dashboard.
-  if (isAuthenticated && profileLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Routes>
       {/* Root */}
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? (
-            profile?.profileCompleted ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Navigate to="/profile" replace />
-            )
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
-
+      <Route path="/" element={<RootRedirect />} />
+      
       {/* Authentication routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />

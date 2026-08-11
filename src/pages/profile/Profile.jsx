@@ -20,23 +20,44 @@ function Profile() {
   console.log(profile);
 
   const handleSave = async () => {
+    const requiredFields = [
+        profile.appName,
+        profile.age,
+        profile.gender,
+        profile.heightCm,
+        profile.weightKg,
+        profile.goal,
+        profile.activityLevel,
+        profile.experienceLevel,
+    ];
+
+    const isIncomplete = requiredFields.some(
+        field => field === null || field === undefined || field === ""
+    );
+
+    if (isIncomplete) {
+        toast.error("Please complete all required fields.");
+        return;
+    }
+
     const request = {
-      age: profile.age,
-      gender: profile.gender,
-      heightCm: profile.heightCm,
-      weightKg: profile.weightKg,
-      goal: profile.goal,
-      activityLevel: profile.activityLevel,
-      experienceLevel: profile.experienceLevel,
-      timezone: profile.timezone,
+        appName: profile.appName,
+        age: profile.age,
+        gender: profile.gender,
+        heightCm: profile.heightCm,
+        weightKg: profile.weightKg,
+        goal: profile.goal,
+        activityLevel: profile.activityLevel,
+        experienceLevel: profile.experienceLevel,
+        timezone: profile.timezone,
     };
 
     const result = await saveProfile(request);
 
     if (result.success) {
-      toast.success(result.message);
+        toast.success(result.message);
     } else {
-      toast.error(result.message);
+        toast.error(result.message);
     }
   };
 
