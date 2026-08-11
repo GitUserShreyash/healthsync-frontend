@@ -47,7 +47,7 @@ function CaloriesSummary({
           </p>
 
           <h3 className="text-3xl font-bold">
-            {remaining}
+            {remaining.toFixed(2)}
           </h3>
 
           <p className="text-sm">

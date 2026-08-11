@@ -82,7 +82,7 @@ function BodyInfoCard({ profile, setProfile }) {
                         </p>
 
                         <p className="text-lg font-bold text-gray-800">
-                            {profile.bmi ?? "--"}
+                            {profile.bmi?.toFixed(1) ?? "--"}
                         </p>
                     </div>
 
