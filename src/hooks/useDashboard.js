@@ -12,7 +12,7 @@ function useDashboard() {
       setError(null);
 
       const dashboardData = await dashboardService.getDashboard();
-
+      
       setDashboard(dashboardData);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load dashboard.");

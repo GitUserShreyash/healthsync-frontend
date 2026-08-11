@@ -19,7 +19,7 @@ import {
 
 function Dashboard() {
   const { dashboard, loading, error } = useDashboard();
-
+  console.log("Dashboard.jsx:dashboard::", dashboard);
   const { nutritionLogs } = useNutrition();
 
   const { hydrationLogs } = useHydration();
@@ -50,7 +50,7 @@ function Dashboard() {
 
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          Welcome, {dashboard.username} 👋
+          Welcome, {dashboard.appName} 👋
         </h1>
 
         <p className="mt-2 text-gray-500">
