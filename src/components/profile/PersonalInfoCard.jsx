@@ -1,7 +1,8 @@
 import useAuth from "../../hooks/useAuth";
 
 function PersonalInfoCard({ profile, setProfile }) {
-    const {user} = useAuth();
+    const { user } = useAuth();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -21,7 +22,6 @@ function PersonalInfoCard({ profile, setProfile }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Email */}
-
                 <div>
                     <label className="block mb-2 text-sm font-medium text-gray-700">
                         Email
@@ -35,8 +35,22 @@ function PersonalInfoCard({ profile, setProfile }) {
                     />
                 </div>
 
-                {/* Age */}
+                {/* Name */}
+                <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                        Name
+                    </label>
 
+                    <input
+                        type="text"
+                        name="appName"
+                        value={profile.appName || ""}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    />
+                </div>
+
+                {/* Age */}
                 <div>
                     <label className="block mb-2 text-sm font-medium text-gray-700">
                         Age
@@ -52,7 +66,6 @@ function PersonalInfoCard({ profile, setProfile }) {
                 </div>
 
                 {/* Gender */}
-
                 <div>
                     <label className="block mb-2 text-sm font-medium text-gray-700">
                         Gender
@@ -69,13 +82,12 @@ function PersonalInfoCard({ profile, setProfile }) {
                         <option value="FEMALE">Female</option>
                         <option value="OTHER">Other</option>
                     </select>
-
                 </div>
 
             </div>
-
         </div>
     );
 }
 
 export default PersonalInfoCard;
+
