@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:8080/healthsync",
+    baseURL: "https://healthsync-backend-gj5i.onrender.com",
     headers: {
         'Content-Type': 'application/json',
     },
