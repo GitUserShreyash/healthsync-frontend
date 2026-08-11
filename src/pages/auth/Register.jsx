@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
@@ -78,11 +78,25 @@ function Register() {
     } catch (err) {
       console.error(err);
 
-      setError(
-        err.response?.data?.message ||
-          err.response?.data ||
-          "Unable to create account. Please try again.",
-      );
+      const serverData = err?.response?.data;
+      let message = "Unable to create account. Please try again.";
+
+      if (serverData) {
+        if (typeof serverData === "string") {
+          message = serverData;
+        } else if (serverData.message) {
+          message = serverData.message;
+        } else {
+          try {
+            message = JSON.stringify(serverData);
+          } catch (e) {
+            // fallback
+            message = String(serverData);
+          }
+        }
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
