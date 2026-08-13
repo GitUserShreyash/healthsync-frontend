@@ -8,10 +8,12 @@ import {
   getCurrentUserApi,
 } from "../api/authApi";
 
+// Login
 const login = async (loginData) => {
   const response = await loginApi(loginData);
 
   const responseData = response.data ?? {};
+
   const token =
     responseData.token ||
     responseData.accessToken ||
@@ -35,35 +37,62 @@ const login = async (loginData) => {
   };
 };
 
+// Signup
 const registerUser = async (userData) => {
   console.log("Registering user with data:", userData);
+
   const response = await signupApi(userData);
 
   return response.data;
 };
 
+// Alias for signup
 const signup = async (userData) => {
   return registerUser(userData);
 };
 
+// Verify email
 const verifyEmail = async (otpData) => {
   const response = await verifyEmailApi(otpData);
 
   return response.data;
 };
 
+// Forgot password
+const forgotPassword = async (forgotData) => {
+  const response = await forgotPasswordApi(forgotData);
+
+  return response.data;
+};
+
+// Reset password
+const resetPassword = async (resetData) => {
+  const response = await resetPasswordApi(resetData);
+
+  return response.data;
+};
+
+// Change password
+const changePassword = async (changeData) => {
+  const response = await changePasswordApi(changeData);
+
+  return response.data;
+};
+
+// Get current authenticated user
 const getCurrentUser = async () => {
   const response = await getCurrentUserApi();
 
   return response.data;
 };
 
+// Logout
 const logout = () => {
   localStorage.removeItem("token");
-
   localStorage.removeItem("role");
 };
 
+// Check authentication
 const isAuthenticated = () => {
   return !!localStorage.getItem("token");
 };
@@ -73,9 +102,9 @@ export default {
   registerUser,
   signup,
   verifyEmail,
-  //forgotPassword,
-  //resetPassword,
-  //changePassword,
+  forgotPassword,
+  resetPassword,
+  changePassword,
   getCurrentUser,
   logout,
   isAuthenticated,
