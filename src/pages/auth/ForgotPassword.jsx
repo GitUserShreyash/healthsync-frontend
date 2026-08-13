@@ -16,8 +16,9 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      await authService.forgotPassword(email);
-
+      await authService.forgotPassword({
+        email: email,
+      });
       // OTP sent successfully
       // Move to reset password page and pass the email
       navigate("/reset-password", {
