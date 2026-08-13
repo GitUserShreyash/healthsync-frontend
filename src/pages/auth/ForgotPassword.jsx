@@ -24,16 +24,20 @@ export default function ForgotPassword() {
         state: { email },
       });
     } catch (err) {
-      console.error(err);
+        console.error(err);
 
-      setError(
-        err.response?.data?.message ||
-          err.response?.data ||
-          "Unable to send OTP. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+        const data = err.response?.data;
+
+        setError(
+          typeof data === "string"
+            ? data
+            : data?.message ||
+              data?.error ||
+              "Unable to send OTP. Please try again."
+        );
+      }finally {
+        setLoading(false);
+      }
   };
 
   return (
