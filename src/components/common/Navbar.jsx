@@ -6,7 +6,7 @@ import useProfile from "../../hooks/useProfile";
 function Navbar({ onMenuClick }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { profile } = useProfile();
+  const { dashboard } = useDashboard();
 
   const handleLogout = () => {
     logout();
@@ -37,7 +37,7 @@ function Navbar({ onMenuClick }) {
           <FaUserCircle size={30} className="text-slate-600" />
 
           <span className="font-medium hidden sm:block">
-            {profile?.appName || "User"}
+            {dashboard?.appName || "User"}
           </span>
         </div>
 
