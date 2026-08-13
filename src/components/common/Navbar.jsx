@@ -1,8 +1,21 @@
-import { FaBell, FaUserCircle, FaBars } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaBars, FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import useProfile from "../hooks/useProfile";
 
 function Navbar({ onMenuClick }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { profile } = useProfile();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <header className="h-16 bg-white border-b px-4 md:px-6 flex items-center justify-between">
+      
       {/* Mobile Menu Button */}
       <button
         onClick={onMenuClick}
@@ -13,16 +26,30 @@ function Navbar({ onMenuClick }) {
 
       {/* Right Section */}
       <div className="flex items-center gap-4 md:gap-6 ml-auto">
+
+        {/* Notifications */}
         <button className="text-slate-600 hover:text-emerald-600">
           <FaBell size={20} />
         </button>
 
-        <div className="flex items-center gap-2 cursor-pointer">
+        {/* User */}
+        <div className="flex items-center gap-2">
           <FaUserCircle size={30} className="text-slate-600" />
 
-          {/* Hide name on very small screens */}
-          <span className="font-medium hidden sm:block">Shreyash</span>
+          <span className="font-medium hidden sm:block">
+            {profile?.appName || "User"}
+          </span>
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition"
+        >
+          <FaSignOutAlt size={16} />
+          <span className="hidden sm:block">Logout</span>
+        </button>
+
       </div>
     </header>
   );
