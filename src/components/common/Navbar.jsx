@@ -1,13 +1,13 @@
 import { FaBell, FaUserCircle, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import useProfile from "../../hooks/useProfile";
+import useDashboard from "../../hooks/useDashboard";
 
 function Navbar({ onMenuClick }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { dashboard } = useDashboard();
-
+  console.log("Dashboard data in Navbar:", dashboard);
   const handleLogout = () => {
     logout();
     navigate("/login");
