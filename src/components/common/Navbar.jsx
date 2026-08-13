@@ -1,6 +1,6 @@
 import { FaBell, FaUserCircle, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import useDashboard from "../../hooks/useDashboard";
 
 function Navbar({ onMenuClick }) {
